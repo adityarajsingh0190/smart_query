@@ -36,14 +36,14 @@ class HomePage extends StatelessWidget {
         fetcher: _fetchPosts,
         staleTime: const Duration(minutes: 2),
         builder: (context, result) {
-          // Loading state — show skeleton
-          if (result.isLoading) {
-            return _buildLoadingSkeleton(context);
-          }
-
           // Error state — show error card with retry
           if (result.isError && result.data == null) {
             return _buildErrorCard(context, result);
+          }
+
+          // Loading state — show skeleton whenever there is no data
+          if (result.data == null) {
+            return _buildLoadingSkeleton(context);
           }
 
           final posts = result.data!;

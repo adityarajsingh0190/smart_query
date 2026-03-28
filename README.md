@@ -5,7 +5,8 @@
 
 **Async server-state management for Flutter** — caching, deduplication, background sync, optimistic updates, and pagination. Inspired by [TanStack Query](https://tanstack.com/query).
 
-Flutter apps spend too much time re-fetching data that hasn't changed, managing loading/error states, and synchronizing server data across screens. **smart_query** handles all of this with a single widget — `QueryBuilder` — so you can focus on your UI.
+Flutter apps spend too much time re-fetching data that hasn't changed, managing loading/error states, and synchronizing server data across screens. 
+**smart_query** handles all of this with a single widget — `QueryBuilder` — so you can focus on your UI.
 
 ---
 

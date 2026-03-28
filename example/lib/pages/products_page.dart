@@ -54,10 +54,6 @@ class _ProductsPageState extends State<ProductsPage> {
               keepPreviousData: true,
               staleTime: const Duration(minutes: 5),
               builder: (context, result) {
-                if (result.isLoading && result.data == null) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-
                 if (result.isError && result.data == null) {
                   return Center(
                     child: Column(
@@ -74,6 +70,10 @@ class _ProductsPageState extends State<ProductsPage> {
                       ],
                     ),
                   );
+                }
+
+                if (result.data == null) {
+                  return const Center(child: CircularProgressIndicator());
                 }
 
                 final items = result.data!;
@@ -128,48 +128,52 @@ class _ProductsPageState extends State<ProductsPage> {
           top: BorderSide(color: colorScheme.outlineVariant),
         ),
       ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          // Previous button
-          IconButton.filled(
-            onPressed:
-                _currentPage > 1 ? () => setState(() => _currentPage--) : null,
-            icon: const Icon(Icons.chevron_left),
-          ),
-          const SizedBox(width: 8),
-
-          // Page number buttons
-          for (int i = 1; i <= _totalPages && i <= 5; i++) ...[
-            _PageButton(
-              page: i,
-              isSelected: _currentPage == i,
-              onPressed: () => setState(() => _currentPage = i),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // Previous button
+            IconButton.filled(
+              onPressed: _currentPage > 1
+                  ? () => setState(() => _currentPage--)
+                  : null,
+              icon: const Icon(Icons.chevron_left),
             ),
-            if (i < _totalPages && i < 5) const SizedBox(width: 4),
-          ],
+            const SizedBox(width: 8),
 
-          if (_totalPages > 5) ...[
-            const SizedBox(width: 4),
-            Text('...', style: Theme.of(context).textTheme.bodyLarge),
-            const SizedBox(width: 4),
-            _PageButton(
-              page: _totalPages,
-              isSelected: _currentPage == _totalPages,
-              onPressed: () => setState(() => _currentPage = _totalPages),
+            // Page number buttons
+            for (int i = 1; i <= _totalPages && i <= 5; i++) ...[
+              _PageButton(
+                page: i,
+                isSelected: _currentPage == i,
+                onPressed: () => setState(() => _currentPage = i),
+              ),
+              if (i < _totalPages && i < 5) const SizedBox(width: 4),
+            ],
+
+            if (_totalPages > 5) ...[
+              const SizedBox(width: 4),
+              Text('...', style: Theme.of(context).textTheme.bodyLarge),
+              const SizedBox(width: 4),
+              _PageButton(
+                page: _totalPages,
+                isSelected: _currentPage == _totalPages,
+                onPressed: () => setState(() => _currentPage = _totalPages),
+              ),
+            ],
+
+            const SizedBox(width: 8),
+
+            // Next button
+            IconButton.filled(
+              onPressed: _currentPage < _totalPages
+                  ? () => setState(() => _currentPage++)
+                  : null,
+              icon: const Icon(Icons.chevron_right),
             ),
           ],
-
-          const SizedBox(width: 8),
-
-          // Next button
-          IconButton.filled(
-            onPressed: _currentPage < _totalPages
-                ? () => setState(() => _currentPage++)
-                : null,
-            icon: const Icon(Icons.chevron_right),
-          ),
-        ],
+        ),
       ),
     );
   }

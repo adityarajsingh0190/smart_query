@@ -64,9 +64,6 @@ class ProfilePage extends StatelessWidget {
         fetcher: _fetchProfile,
         staleTime: const Duration(minutes: 5),
         builder: (context, result) {
-          if (result.isLoading) {
-            return const Center(child: CircularProgressIndicator());
-          }
           if (result.isError && result.data == null) {
             return Center(
               child: Column(
@@ -83,6 +80,10 @@ class ProfilePage extends StatelessWidget {
                 ],
               ),
             );
+          }
+
+          if (result.data == null) {
+            return const Center(child: CircularProgressIndicator());
           }
 
           return _ProfileContent(profile: result.data!);

@@ -51,10 +51,6 @@ class PostsPage extends StatelessWidget {
           return allPages.length + 1;
         },
         builder: (context, result) {
-          if (result.isLoading) {
-            return const Center(child: CircularProgressIndicator());
-          }
-
           if (result.isError && result.pages.isEmpty) {
             return Center(
               child: Column(
@@ -72,6 +68,10 @@ class PostsPage extends StatelessWidget {
                 ],
               ),
             );
+          }
+
+          if (result.pages.isEmpty) {
+            return const Center(child: CircularProgressIndicator());
           }
 
           // Flatten all pages into one list
