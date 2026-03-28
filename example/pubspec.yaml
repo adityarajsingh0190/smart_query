@@ -7,11 +7,11 @@ environment:
   flutter: ">=3.10.0"
 
 dependencies:
+  dio: ^5.9.2
   flutter:
     sdk: flutter
   smart_query:
     path: ../
-  http: ^1.1.0
 
 dev_dependencies:
   flutter_test:

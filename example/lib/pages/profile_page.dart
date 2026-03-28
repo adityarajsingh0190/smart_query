@@ -1,8 +1,7 @@
-import 'dart:convert';
 import 'dart:math';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:smart_query/smart_query.dart';
 
 /// Profile model.
@@ -11,9 +10,14 @@ class UserProfile {
       {required this.id, required this.name, required this.email});
 
   factory UserProfile.fromJson(Map<String, dynamic> json) {
+    // Handling dummyjson.com's firstName/lastName structure
+    final firstName = json['firstName'] as String? ?? 'User';
+    final lastName = json['lastName'] as String? ?? '';
+    final name = '$firstName $lastName'.trim();
+
     return UserProfile(
       id: json['id'] as int,
-      name: json['name'] as String,
+      name: name,
       email: json['email'] as String,
     );
   }
@@ -42,14 +46,21 @@ class ProfilePage extends StatelessWidget {
   static const _userId = 1;
   static const _queryKey = ['user', _userId];
 
+  static final _dio = Dio(BaseOptions(
+    headers: {
+      'User-Agent':
+          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+    },
+  ));
+
   static Future<UserProfile> _fetchProfile() async {
-    final response = await http.get(
-      Uri.parse('https://jsonplaceholder.typicode.com/users/$_userId'),
+    final response = await _dio.get(
+      'https://dummyjson.com/users/$_userId',
     );
     if (response.statusCode != 200) {
       throw Exception('Failed to load profile');
     }
-    return UserProfile.fromJson(jsonDecode(response.body));
+    return UserProfile.fromJson(response.data);
   }
 
   @override

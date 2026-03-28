@@ -1,7 +1,5 @@
-import 'dart:convert';
-
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:smart_query/smart_query.dart';
 
 /// Posts Page — Infinite Scroll:
@@ -16,17 +14,23 @@ class PostsPage extends StatelessWidget {
   static const int _pageSize = 10;
   static const int _totalPosts = 100; // JSONPlaceholder has 100 posts
 
+  static final _dio = Dio(BaseOptions(
+    headers: {
+      'User-Agent':
+          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+    },
+  ));
+
   static Future<List<Map<String, dynamic>>> _fetchPostsPage(int page) async {
     final start = (page - 1) * _pageSize;
-    final response = await http.get(
-      Uri.parse(
-        'https://jsonplaceholder.typicode.com/posts?_start=$start&_limit=$_pageSize',
-      ),
+    final response = await _dio.get(
+      'https://dummyjson.com/posts',
+      queryParameters: {'skip': start, 'limit': _pageSize},
     );
     if (response.statusCode != 200) {
       throw Exception('Failed to load posts page $page');
     }
-    final List<dynamic> data = jsonDecode(response.body);
+    final List<dynamic> data = response.data['posts'];
     return data.cast<Map<String, dynamic>>();
   }
 

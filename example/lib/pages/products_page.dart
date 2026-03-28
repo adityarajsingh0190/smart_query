@@ -1,7 +1,5 @@
-import 'dart:convert';
-
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:smart_query/smart_query.dart';
 
 /// Products Page — Classic Pagination:
@@ -21,18 +19,24 @@ class _ProductsPageState extends State<ProductsPage> {
   static const int _totalItems = 100; // JSONPlaceholder has 100 posts
   static final int _totalPages = (_totalItems / _pageSize).ceil();
 
+  static final _dio = Dio(BaseOptions(
+    headers: {
+      'User-Agent':
+          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+    },
+  ));
+
   static Future<List<Map<String, dynamic>>> _fetchProducts(dynamic page) async {
     final pageNum = page as int;
     final start = (pageNum - 1) * _pageSize;
-    final response = await http.get(
-      Uri.parse(
-        'https://jsonplaceholder.typicode.com/posts?_start=$start&_limit=$_pageSize',
-      ),
+    final response = await _dio.get(
+      'https://dummyjson.com/posts',
+      queryParameters: {'skip': start, 'limit': _pageSize},
     );
     if (response.statusCode != 200) {
       throw Exception('Failed to load products page $pageNum');
     }
-    final List<dynamic> data = jsonDecode(response.body);
+    final List<dynamic> data = response.data['posts'];
     return data.cast<Map<String, dynamic>>();
   }
 
