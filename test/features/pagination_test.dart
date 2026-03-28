@@ -186,7 +186,6 @@ void main() {
       lastResult!.refetch();
       await tester.pump();
       expect(lastResult?.pages.isEmpty, true);
-      print("STATUS: ${lastResult?.status}");
       expect(lastResult?.status, QueryStatus.loading);
 
       await tester.pumpAndSettle();
